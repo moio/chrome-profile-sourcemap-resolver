@@ -156,8 +156,8 @@ async function resolveTracesForNodeModules(traces, nodeModulesPath) {
       resolveOriginalLocations(
         url,
         traces.map((traceable) => ({
-          column: Math.max(0, traceable.columnNumber - 1),
-          line: Math.max(1, traceable.lineNumber),
+          column: traceable.columnNumber,
+          line: traceable.lineNumber
         })),
         nodeModuleLoader
       ).then((resolvedLocations) => {
