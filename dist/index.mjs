@@ -8037,10 +8037,17 @@ async function getSourceMap(url, fileLoader) {
     console.warn(`Could not resolve "${url}".`);
     return "";
   };
-  const content = await urlLoader(url);
+  let content = await urlLoader(url);
   if (!content) {
     return;
   }
+
+  // HACK: avoid multiple source mapping URLs per content. Only keep the last, instead of keeping the first
+  const commentCount = (content.match(/\/\/# sourceMappingURL=/g) || []).length
+  for(let i = 0; i < commentCount -1; i++) {
+    content = content.replace("//# sourceMappingURL=", "//# sourceMappingDISABLED=")
+  }
+
   return new Promise((resolve, reject) => {
     source_map_resolve.resolve(
       content,
